@@ -30,9 +30,10 @@ void red(int M, int N, float prob){
 	
 	float p,prob,denom;
 	int num,a,b,c,N,M;
-	
+	int *red;
+
 	b=prob*10000;
-	int red[N][M];
+	red=(int*)malloc(N*M*sizeof(int));
 	a=0;
 	for (int i=0;i<N;i++){  
     
@@ -45,29 +46,32 @@ void red(int M, int N, float prob){
 			else{
 			num=0;
 			}
-			red[i][j]=num;	
-        	printf("\t%d",red[i][j]);
+			*(red+i*M+j)=num;	
+        	printf("\t%d",*(red+i*M+j));
 		}
 	}
-int hoshen(int red[N][M],int N,int M){
+int hoshen(int *red,int N,int M){
 
-	int clase[N*M];
+	int *clase;
 	int h,i,j,s1,s2,frag;
 	
+	clase=(int*)malloc(N*M/2*sizeof(int));
 	s1=0;
 	frag=2;
 	j=0;
 	h=0; //puede ser que este h se resetee cada vez que llamo a la función actualizar porque está definida como una función auxiliar.
+	i=0;
 
 	for(k=0;k<N*M;k++){
-		clase[k]=0;
+		*(clase+k)=0;
 	}
 	
-	if (red[0][0]==1){
-		actualizar(s1,red[0][0],clase,frag);
+	if (*red==1){
+		actualizar(s1,red,clase,frag);
 	for(i=1;i<N;i++){
-		s1=red[i-1][0];
-		actualizar(s1,red[i][0],clase,frag);
+		if(*(red+i)==1){
+			s1=*(red+i-1);	
+			actualizar(s1,red+i,clase,frag);
 		
 		
 	
@@ -75,14 +79,15 @@ int hoshen(int red[N][M],int N,int M){
 
 
 }
-int actualizar(int s1,int red,int clase[N*M],int frag,int i,int j,int h){
+int actualizar(int s1,int red,int *clase,int frag,int i,int j,int h){
 	if (s1==0){
-		red[i][j]=frag;
-		clase[h]=frag;
+		*(red+i*M+j)=frag;
+		*(clase+h)=frag;
 		frag=frag+1;
 		h=h+1;
+		
 	}
 	else{
-		red[i][j]=s1;
+		*(red+i*M+j)=s1;
 	}
 }
